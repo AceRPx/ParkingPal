@@ -1,10 +1,9 @@
-import random
 
 # Define available parking lots and their capacities
 parking_lots = {
-    'Red': 10,
-    'Blue': 15,
-    'Green': 12,
+    'Red': 3,
+    'Blue': 3,
+    'Green': 3,
 }
 
 # Function to display available parking lots
