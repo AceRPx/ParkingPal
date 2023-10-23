@@ -1,0 +1,49 @@
+def select_color_lot():
+    
+    print("Please choose the color of your preferred parking lot:")
+    print("1. Red Lot")
+    print("2. Blue Lot")
+    print("3. Green Lot")
+    print("4. Purple/White Lot")
+    print("5. Yellow Lot")
+    print("6. Parking Garage")
+    print("7. General Lot (Blue, Green, Yellow)")
+    
+    color_choice = input("Enter the number of your preferred color lot: ")
+
+    if color_choice == "1":
+        return "Red Lot", ["Village", "Yeager"]
+    elif color_choice == "2":
+        return "Blue Lot", ["Citation East", "Corsair", "Discovery", "Falcon", "Lindbergh", "Sabre", "Tomcat"]
+    elif color_choice == "3":
+        return "Green Lot", ["Enterprise", "Mustang", "Voyager"]
+    elif color_choice == "4":
+        return "Purple/White Lot", ["Gemini", "Spitfire"]
+    elif color_choice == "5":
+        return "Yellow Lot", ["Citation Center", "Citation East Extension", "Cochran", "Columbia", "Concorde", "MicaPlex", "Tomcat"]
+    elif color_choice == "6":
+        return "Parking Garage", ["Level A", "Level B"]
+    elif color_choice == "7":
+        return "General Lot (Blue, Green, Yellow)", ["Atlantis North", "Atlantis Center", "Atlantis South", "Challenger", "Defender", "Earhart", "Harrier", "Hornet"]
+    else:
+        return "Invalid choice. Please select a valid color lot."
+
+def select_specific_lot(color_lot, sub_lots):
+    print(f"Please choose your specific lot within {color_lot}:")
+    for i, sub_lot in enumerate(sub_lots, start=1):
+        print(f"{i}. {sub_lot}")
+    
+    specific_choice = input("Enter the number of your specific lot: ")
+    
+    try:
+        specific_choice = int(specific_choice)
+        if 1 <= specific_choice <= len(sub_lots):
+            return sub_lots[specific_choice - 1]
+        else:
+            return "Invalid choice. Please select a valid specific lot within the color lot."
+    except ValueError:
+        return "Invalid choice. Please select a valid specific lot within the color lot."
+
+color_lot, sub_lots = select_color_lot()
+selected_lot = select_specific_lot(color_lot, sub_lots)
+print(f"You have selected: {selected_lot} in the {color_lot}")
