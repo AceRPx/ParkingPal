@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapbox Route to Parking Lots</title>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">
+  <style>
+    /* Set the dimensions of the map */
+    body { margin: 0; padding: 0; }
+    #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script>
+    // Set your Mapbox access token
+    mapboxgl.accessToken = 'pk.eyJ1IjoidGF5bGoxMzgiLCJhIjoiY2xwNXVpZ21yMWs4NDJpcWlqNHRtb3F1cSJ9.ejZorJyGmRloQB_TQsbA_w';
+
+    // Create a new map
+    var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11', // replace with your desired map style
+      center: [-81.0568, 29.1856], // Center the map on Embry-Riddle Daytona Beach
+      zoom: 14 // Adjust the zoom level as needed
+    });
+
+    // Add navigation control to the map
+    map.addControl(new mapboxgl.NavigationControl());
+
+    // Get user's location and add a marker
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var userLocation = [position.coords.longitude, position.coords.latitude];
+      
+      // Add a marker for the user's location
+      new mapboxgl.Marker().setLngLat(userLocation).addTo(map);
+
+      // Replace destination coordinates with the actual parking lot coordinates
+      var destination = [-81.0589, 29.1875];
+
+      // Calculate and display route to the parking lot
+      var directions = new MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+        unit: 'metric',
+        profile: 'mapbox/driving-traffic',
+        waypoints: [
+          { coordinates: userLocation },
+          { coordinates: destination }
+        ]
+      });
+
+      map.addControl(directions, 'top-left');
+    });
+
+  </script>
+</body>
+</html>
