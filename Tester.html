@@ -8,6 +8,11 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" />
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" />
+
   <style>
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
@@ -33,7 +38,7 @@
         <p>Select parking duration:</p>
         <input type="range" min="1" max="12" value="1" id="durationSlider" class="form-control" onchange="updateDuration()">
         <p id="selectedDuration">Selected Duration: 1 hour</p>
-        <button id="submitButton" class="btn btn-black" onclick="submitSelection()">Submit</button>
+        <button id="submitButton" class="btn btn-dark" onclick="submitSelection()">Submit</button>
         <div id="statusButtons">
           <button id="statusButton" class="btn" disabled></button>
         </div>
@@ -55,28 +60,28 @@
 
     map.addControl(new mapboxgl.NavigationControl());
 
+    var userLocation;
+
     navigator.geolocation.getCurrentPosition(function(position) {
-      var userLocation = [position.coords.longitude, position.coords.latitude];
+      userLocation = [position.coords.longitude, position.coords.latitude];
       new mapboxgl.Marker().setLngLat(userLocation).addTo(map);
       map.setCenter(userLocation);
-
-      var destination = [-81.0589, 29.1875];
-
-      var directions = new MapboxDirections({
-        accessToken: mapboxgl.accessToken,
-        unit: 'metric',
-        profile: 'mapbox/driving-traffic',
-        waypoints: [
-          { coordinates: userLocation },
-          { coordinates: destination }
-        ]
-      });
-
-      map.addControl(directions, 'top-left');
-    });
+    }, function(error) {
+      console.error("Error getting geolocation:", error);
+    }, { secure: true });
 
     var timer;
     var timeRemaining;
+
+    var coordinates = {
+      'Red': [29.194663, -81.053860],
+      'Blue': [29.191738, -81.052932],
+      'Green': [29.191054, -81.050020],
+      'Purple/White': [29.193604, -81.049841],
+      'Yellow': [29.190590, -81.049656],
+      'Garage': [29.186915, -81.048540],
+      'General': [29.191764, -81.047538]
+    };
 
     function showOptions(color) {
       var options = getOptions(color);
@@ -115,6 +120,22 @@
       } else {
         statusButton.className = 'btn btn-success';
       }
+      var destinationCoordinates = coordinates[color];
+      routeToDestination(destinationCoordinates);
+    }
+
+    function routeToDestination(destination) {
+      var directions = new MapboxDirections({
+        accessToken: mapboxgl.accessToken,
+        unit: 'metric',
+        profile: 'mapbox/driving-traffic',
+        waypoints: [
+          { coordinates: userLocation },
+          { coordinates: destination }
+        ]
+      });
+
+      map.addControl(directions, 'top-left');
     }
 
     function updateDuration() {
@@ -138,6 +159,8 @@
 
     function submitSelection() {
       alert('Selection submitted! Parking duration: ' + document.getElementById('selectedDuration').innerText);
+      // Hide the right corner tab after submission
+      document.getElementById('optionsContainer').style.display = 'none';
     }
 
     function getOptions(color) {
