@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,28 +9,29 @@
   <link href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.js"></script>
   <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
-  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v2.7.0/mapbox-gl.css" />
   <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css" />
-
   <style>
     body { margin: 0; padding: 0; }
     #map { position: absolute; top: 0; bottom: 0; width: 100%; }
     .container { z-index: 1; position: absolute; top: 20px; right: 20px; background: #fff; padding: 10px; }
   </style>
 </head>
+
 <body>
   <div class="container">
     <h2>Color Picker</h2>
-    <div class="btn-group" role="group" aria-label="Color Buttons">
-      <button type="button" class="btn btn-primary" onclick="showOptions('Red')">Red</button>
-      <button type="button" class="btn btn-success" onclick="showOptions('Blue')">Blue</button>
-      <button type="button" class="btn btn-warning" onclick="showOptions('Green')">Green</button>
-      <button type="button" class="btn btn-danger" onclick="showOptions('Purple/White')">Purple/White</button>
-      <button type="button" class="btn btn-info" onclick="showOptions('Yellow')">Yellow</button>
-      <button type="button" class="btn btn-default" onclick="showOptions('Garage')">Garage</button>
-      <button type="button" class="btn btn-primary btn-lg" onclick="showOptions('General')">General</button>
+    <div>
+      <label for="colorDropdown">Select Color:</label>
+      <select id="colorDropdown" class="form-control" onchange="showOptions(this.value)">
+        <option value="Red">Red</option>
+        <option value="Blue">Blue</option>
+        <option value="Green">Green</option>
+        <option value="Purple/White">Purple/White</option>
+        <option value="Yellow">Yellow</option>
+        <option value="Garage">Garage</option>
+        <option value="General">General</option>
+      </select>
     </div>
     <div id="optionsContainer" style="display: none;">
       <h3 id="selectedColor"></h3>
@@ -49,25 +51,48 @@
   <div id="map"></div>
 
   <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoidGF5bGoxMzgiLCJhIjoiY2xwNXVpZ21yMWs4NDJpcWlqNHRtb3F1cSJ9.ejZorJyGmRloQB_TQsbA_w';
+    mapboxgl.accessToken = 'pk.eyJ1IjoidGF5bGoxMzgiLCJhIjoiY2xwc2hncDloMDM0czJqbzExc2R4MWQ5diJ9.jy3Y3wBp2DUvYZVrc8qGNw';
 
-    var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      zoom: 14
+    // Define map variable globally
+    var map;
+
+    navigator.geolocation.getCurrentPosition(successLocation, errorLocation, {
+      enableHighAccuracy: true
     });
 
-    map.addControl(new mapboxgl.NavigationControl());
+    function successLocation(position) {
+    console.log(position);
+    // Initialize the map
+    setupMap([position.coords.longitude, position.coords.latitude]);
 
-    var userLocation;
+    // Add a marker at the user's current location
+    var marker = new mapboxgl.Marker()
+      .setLngLat([position.coords.longitude, position.coords.latitude])
+      .addTo(map);
+  }
 
-    navigator.geolocation.getCurrentPosition(function(position) {
-      userLocation = [position.coords.longitude, position.coords.latitude];
-      new mapboxgl.Marker().setLngLat(userLocation).addTo(map);
-      map.setCenter(userLocation);
-    }, function(error) {
-      console.error("Error getting geolocation:", error);
-    }, { secure: true });
+  function errorLocation() {
+    // Default location if geolocation fails
+    setupMap([29.194663, -81.053860]);
+  }
+
+  function setupMap(center) {
+    // Assign the map variable
+    map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: center,
+      zoom: 15
+    });
+
+      const nav = new mapboxgl.NavigationControl();
+      map.addControl(nav);
+
+      var directions = new MapboxDirections({
+        accessToken: mapboxgl.accessToken
+      });
+      map.addControl(directions, 'top-left');
+    }
 
     var timer;
     var timeRemaining;
@@ -124,16 +149,17 @@
     }
 
     function routeToDestination(destination) {
+      // Clear existing routes before adding a new one
+      map.removeControl(map.getControl('directions'));
       var directions = new MapboxDirections({
         accessToken: mapboxgl.accessToken,
         unit: 'metric',
         profile: 'mapbox/driving-traffic',
         waypoints: [
-          { coordinates: userLocation },
+          { coordinates: center },
           { coordinates: destination }
         ]
       });
-
       map.addControl(directions, 'top-left');
     }
 
@@ -168,8 +194,8 @@
       switch (color) {
         case 'Red':
           options = [
-            { name: 'Village', availableSlots: getRandomNumber() },
-            { name: 'Yeager', availableSlots: getRandomNumber() }
+            { name: 'Village ', availableSlots: getRandomNumber() },
+            { name: 'Yeager -81.053960, 29.194390', availableSlots: getRandomNumber() }
           ];
           break;
         case 'Blue':
@@ -177,7 +203,7 @@
             { name: 'Citation East', availableSlots: getRandomNumber() },
             { name: 'Corsair', availableSlots: getRandomNumber() },
             { name: 'Discovery', availableSlots: getRandomNumber() },
-            { name: 'Falcon', availableSlots: getRandomNumber() },
+            { name: 'Falcon -81.050945, 29.188831', availableSlots: getRandomNumber() },
             { name: 'Lindbergh', availableSlots: getRandomNumber() },
             { name: 'Sabre', availableSlots: getRandomNumber() },
             { name: 'Tomcat', availableSlots: getRandomNumber() }
@@ -185,7 +211,7 @@
           break;
         case 'Green':
           options = [
-            { name: 'Enterprise', availableSlots: getRandomNumber() },
+            { name: 'Enterprise -81.050629 , 29.191096', availableSlots: getRandomNumber() },
             { name: 'Mustang', availableSlots: getRandomNumber() },
             { name: 'Voyager', availableSlots: getRandomNumber() }
           ];
@@ -193,7 +219,7 @@
         case 'Purple/White':
           options = [
             { name: 'Gemini', availableSlots: getRandomNumber() },
-            { name: 'Spitfire', availableSlots: getRandomNumber() }
+            { name: 'Spitfire -81.049857 , 29.193605', availableSlots: getRandomNumber() }
           ];
           break;
         case 'Yellow':
@@ -202,14 +228,14 @@
             { name: 'Citation East Extension', availableSlots: getRandomNumber() },
             { name: 'Cochran', availableSlots: getRandomNumber() },
             { name: 'Columbia', availableSlots: getRandomNumber() },
-            { name: 'Concorde', availableSlots: getRandomNumber() },
+            { name: 'Concorde -81.049785 , 29.190649', availableSlots: getRandomNumber() },
             { name: 'MicaPlex', availableSlots: getRandomNumber() },
             { name: 'Tomcat', availableSlots: getRandomNumber() }
           ];
           break;
         case 'Garage':
           options = [
-            { name: 'Level A', availableSlots: getRandomNumber() },
+            { name: 'Level A -81.048575,29.186940', availableSlots: getRandomNumber() },
             { name: 'Level B', availableSlots: getRandomNumber() }
           ];
           break;
@@ -220,7 +246,7 @@
             { name: 'Atlantis South', availableSlots: getRandomNumber() },
             { name: 'Challenger', availableSlots: getRandomNumber() },
             { name: 'Defender', availableSlots: getRandomNumber() },
-            { name: 'Earhart', availableSlots: getRandomNumber() },
+            { name: 'Earhart -81.047551 , 29.191687', availableSlots: getRandomNumber() },
             { name: 'Harrier', availableSlots: getRandomNumber() },
             { name: 'Hornet', availableSlots: getRandomNumber() }
           ];
@@ -236,5 +262,3 @@
   </script>
 </body>
 </html>
-
-
