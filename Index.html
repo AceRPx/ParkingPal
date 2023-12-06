@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Web Page</title>
+
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 </head>
 <body>
     <header>
-        <h1>Enter Student Info</h1>
+        <h1>Welcome to Parking Pal</h1>
     </header>
 
     <nav>
@@ -21,7 +24,7 @@
     <main>
         <section>
             <h2>Login Form</h2>
-            <form class="form-horizontal" method="post" action="/login" onsubmit="return validateForm()">
+            <form class="form-horizontal" method="post" action="{{ url_for('submit') }}" onsubmit="return validateForm()">
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="email">Email:</label>
                     <div class="col-sm-10">
@@ -36,12 +39,14 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-default">Submit</button>
+                        <button type="button" class="btn btn-default" onclick="submitForm()">Submit</button>
                     </div>
                 </div>
             </form>
         </section>
     </main>
+
+    <!-- Include jQuery and Bootstrap JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -57,6 +62,15 @@
 
             return true;
         }
+
+        function submitForm() {
+            if (validateForm()) {
+                // Perform email verification and other necessary checks here
+                // If verification is successful, redirect to Tester.html
+                window.location.href = "Tester.html";
+            }
+        }
     </script>
 </body>
 </html>
+
