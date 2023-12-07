@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Web Page</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom, #000000, #021e6a); /* Vertical gradient background */
+            font-family: Poppins, sans-serif;
+            font-weight: bold;
+            color: rgb(255, 255, 255);
+        }
+
+        h1 {
+            margin-top: 1px;
+            margin-bottom: 0px; /* Adjusted margin for more space between header and main content */
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 4vw;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        main {
+            text-align: center;
+        }
+
+        form {
+            max-height: 500px;
+            max-width: 520px; /* Increased the max-width for the outer box by 20% */
+            margin: 0 auto; /* Centered the form */
+            padding: 10px 10px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 20px; /* Original margin */
+            text-align: right; /* Align the form group content to the right */
+        }
+
+        /*login header*/
+        .form-group h2 {
+            text-align: center;
+            margin-bottom: 20px; /* Adjusted margin for space between "Login Form" and input fields */
+            margin-top: 8px;
+            color: rgb(6, 0, 43);
+            font-family: 'Poppins', sans-serif;
+            font-size: 40px;
+            font-weight: bold;
+            margin-left: 15px;
+            margin-right: 15px;
+        }
+
+        /*email and pass labels*/
+        .form-group label {
+            width: 80px;
+            font-size: medium;
+            margin-right: 10px; /* Adjusted margin-right to shift labels slightly to the right */
+            color: rgb(6, 0, 43);
+            display: inline-block; /* Display labels inline */
+        }
+
+        .form-group input {
+            color: #000000;
+            flex: 1;
+            padding: 10px; /* Added padding for better appearance */
+            width: 270px;
+            margin-left: 10px; /* Adjusted margin-left to align inputs with labels */
+            margin-right: 60px; /* Adjusted margin-right to align inputs with labels */
+        }
+
+        .form-group button {
+            display: block;
+            margin: 0 auto;
+            background-color: rgb(6, 0, 43);;
+            color: rgb(255, 255, 255);
+            font-size: large;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            height: 50px;
+            width: 150px;
+            margin-top: 15px; /* Added margin-top to create space between input fields and button */
+        }
+
+        /*3 buttons*/
+        nav {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        /*3 buttons*/
+        nav a {
+            background-color: rgb(9, 0, 57);
+            color: rgb(255, 255, 255);
+            padding: 10px 20px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 150px; /* Set a specific width for the buttons */
+            margin-right: -20px;
+            margin-left:-20px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1 style="margin-bottom: 60px;"></h1>
+    </header>
+
+    <main>
+        <section>
+            <form class="form-horizontal" method="post" action="lotSelection.html" onsubmit="return validateForm()">
+                <div class="form-group">
+                    <h2>Good to see you again!</h2>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" placeholder="Enter email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Password:</label>
+                    <input type="password" id="pwd" placeholder="Enter password" name="pwd">
+                </div>
+                <div class="form-group">
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </section>
+
+        <nav>
+            <a href="https://daytonabeach.erau.edu/-/media/files/daytona-beach/about/campus-map.pdf"
+                target="_blank">School Map</a>
+            <a href="https://myerauedu.sharepoint.com/sites/ERNIE/SitePages/Home.aspx?wa=wsignin1.0"
+                target="_blank">Ernie</a>
+        </nav>
+    </main>
+
+    <script>
+        function validateForm() {
+            var email = document.getElementById("email").value;
+            var emailPattern = /^[a-zA-Z0-9_.+-]+@(my\.)?erau\.edu$/;
+
+            if (!email.match(emailPattern)) {
+                alert("Invalid email format. Please use @my.erau.edu or @erau.edu.");
+                return false;
+            }
+
+            // Simulating a successful login
+            alert("Login successful!"); // You can remove this line once you implement the actual login logic
+
+            // Redirecting to lotSelection.html
+            window.location.href = "lotSelection.html";
+
+            return true;
+        }
+    </script>
+</body>
+
+</html>
